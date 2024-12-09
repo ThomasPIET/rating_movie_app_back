@@ -14,6 +14,7 @@ app.get('/search', (req, res) => {
         { id: 1, name: `Movie 1` },
         { id: 2, name: `Movie 2` },
         { id: 3, name: `Inception` },
+        { id: 4, name: `Interstellar` },
     ];
 
     const filteredResults = results.filter((result) => {

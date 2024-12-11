@@ -1,26 +1,36 @@
-const app = require('./server');
+const app = require('express')();
+const axios = require('axios');
 const PORT = 3000;
+require('dotenv').config();
 
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
 });
-
-
-app.get('/search', (req, res) => {
+app.get('/search', async (req, res) => {
     const query = req.query.query;
     console.log(`You searched for: ${query}`);
 
-    const results = [
-        { id: 1, name: `Movie 1` },
-        { id: 2, name: `Movie 2` },
-        { id: 3, name: `Inception` },
-        { id: 4, name: `Interstellar` },
-    ];
+    try {
+        const response = await axios.get('https://api.themoviedb.org/3/search/movie', {
+            params: {
+                api_key: process.env.TMDB_API_KEY,
+                query: query,
+                language: 'fr-FR',
+                page: 1,
+            }
+        });
 
-    const filteredResults = results.filter((result) => {
-        return result.name.toLowerCase().includes(query.toLowerCase());
+        const results = response.data.results;
 
-    });
+        if (results.length === 0) {
+            return res.status(404).json({ message: 'Nothing found.' });
+        }
 
-    res.json(filteredResults);
+        return res.json(results);
+    } catch (error) {
+        console.error('Error while fetching data from TMDb:', error);
+        if (!res.headersSent) {
+            return res.status(500).json({ error: 'Error while fetching data from TMDb' });
+        }
+    }
 });

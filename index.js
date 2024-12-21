@@ -13,11 +13,7 @@ app.get('/search', async (req, res) => {
     try {
         const response = await axios.get('https://api.themoviedb.org/3/search/movie', {
             params: {
-                api_key: process.env.TMDB_API_KEY,
-                query: query,
-                language: 'fr-FR',
-                page: 1,
-                sort_by: 'popularity.desc'
+                api_key: process.env.TMDB_API_KEY, query: query, language: 'fr-FR', page: 1, sort_by: 'popularity.desc'
             }
         });
 
@@ -41,14 +37,38 @@ app.get('/popular', async (req, res) => {
     try {
         const response = await axios.get('https://api.themoviedb.org/3/discover/movie', {
             params: {
-                api_key: process.env.TMDB_API_KEY,
-                language: 'fr-FR',
-                page: 1,
+                api_key: process.env.TMDB_API_KEY, language: 'fr-FR', page: 1,
 
             }
         });
 
         const results = response.data.results;
+
+        return res.json(results);
+    } catch (error) {
+        console.error('Error while fetching data from TMDb:', error);
+        if (!res.headersSent) {
+            return res.status(500).json({error: 'Error while fetching data from TMDb'});
+        }
+    }
+});
+
+app.get('/credits', async (req, res) => {
+    const query = req.query.query;
+    console.log(`You requests for: ${query}`);
+
+
+    try {
+        const response = await axios.get(`https://api.themoviedb.org/3/movie/${query}/credits`, {
+            params: {
+                api_key: process.env.TMDB_API_KEY, language: 'fr-FR',
+
+            }
+        });
+
+        const results = response.data.cast;
+
+        console.log(results);
 
         return res.json(results);
     } catch (error) {

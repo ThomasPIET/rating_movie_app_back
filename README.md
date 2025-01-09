@@ -38,8 +38,8 @@ Avant de commencer, assurez-vous d'avoir les éléments suivants installés sur 
 1. **Cloner le dépôt**
 
    ```bash
-   git clone https://github.com/votre-utilisateur/votre-repo.git
-   cd votre-repo
+   git clone git@github.com:ThomasPIET/rating_movie_app_back.git
+   cd rating_movie_app_back
    ```
 
 2. **Installer les dépendances**
